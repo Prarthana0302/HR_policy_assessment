@@ -4,7 +4,6 @@ import json
 
 class Results(models.Model):
     R_id = models.AutoField(primary_key=True)
-    Test = models.JSONField()  # Stores list of dictionaries [{q1: a1}, {q2: a2}, ...]
     Result_past = models.FloatField(null=True, blank=True)
     Result_present = models.FloatField()
 
@@ -13,7 +12,7 @@ class Results(models.Model):
 
 class Employee(models.Model):
     E_id = models.AutoField(primary_key=True)
-    E_name = models.CharField(max_length=255)  # New column for employee name
+    E_name = models.CharField(max_length=255) 
     E_email = models.EmailField(unique=True)
     R_id = models.ForeignKey(Results, on_delete=models.CASCADE)
 
