@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <h3 class="page-title"> Settings</h3>
+</div>
+<div class="grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home-1" role="tab" aria-controls="home-1" aria-selected="true">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile-1" role="tab" aria-controls="profile-1" aria-selected="false">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact-1" role="tab" aria-controls="contact-1" aria-selected="false">Contact</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="home-1" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="media">
+                        <img class="mr-3 w-25 rounded" src="../../images/samples/300x300/13.jpg" alt="sample image">
+                        <div class="media-body">
+                            <h4 class="mt-0">Why choose us?</h4>
+                              <p>
+                                  Far curiosity incommode now led smallness allowance. Favour bed assure son things yet. She consisted
+                                  consulted elsewhere happiness disposing household any old the. Widow downs you new shade drift hopes
+                                  small. So otherwise commanded sweetness we improving. Instantly by daughters resembled unwilling principle
+                                  so middleton.
+                              </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile-1" role="tabpanel" aria-labelledby="profile-tab">
+                      <div class="media">
+                        <img class="mr-3 w-25 rounded" src="../../images/faces/face12.jpg" alt="sample image">
+                        <div class="media-body">
+                          <h4 class="mt-0">John Doe</h4>
+                          <p>
+                              Fail most room even gone her end like. Comparison dissimilar unpleasant six compliment two unpleasing
+                              any add. Ashamed my company thought wishing colonel it prevent he in. Pretended residence are something
+                              far engrossed old off.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="contact-1" role="tabpanel" aria-labelledby="contact-tab">
+                      <h4>Contact us </h4>
+                      <p>
+                        Feel free to contact us if you have any questions!
+                      </p>
+                      <p>
+                        <i class="fa fa-phone text-info"></i>
+                        +123456789
+                      </p>
+                      <p>
+                        <i class="far fa-envelope-open text-success"></i>
+                        contactus@example.com
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+{% endblock content %}

@@ -1,2 +1,11 @@
-<h2>Welcome Employee</h2>
-<a href="{% url 'logout' %}">Logout</a>
+{% extends "policy_assessment/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="page-header">
+        <h2>Welcome Employee</h2>
+    </div>
+    <div class="content">
+        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    </div>
+{% endblock content %}

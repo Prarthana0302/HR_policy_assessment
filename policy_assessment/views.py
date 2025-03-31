@@ -29,3 +29,24 @@ def welcome_employee(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def take_test(request):
+    return render(request, "policy_assessment/take_test.html")
+
+@login_required
+def previous_result(request):
+    return render(request, "policy_assessment/previous_result.html")
+
+# Admin Views
+@login_required
+def manage_tests(request):
+    return render(request, "policy_assessment/manage_tests.html")
+
+@login_required
+def view_results(request):
+    return render(request, "policy_assessment/view_results.html")
+
+@login_required
+def manage_employees(request):
+    return render(request, "policy_assessment/manage_employees.html")

@@ -55,7 +55,7 @@ ROOT_URLCONF = 'HR_policy_assessment.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "policy_assignment/templates/policy_assessment"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,0 +1,61 @@
+<!-- {% load static %}
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item nav-profile">
+            <div class="nav-link">
+              <div class="profile-name">
+                <p class="name">
+                  <h6>side nav bar</h6>
+                </p>
+                
+              </div>
+            </div>
+          </li>
+          
+        </ul>
+      </nav> -->
+
+      {% load static %}
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+              <li class="nav-item nav-profile">
+                  <div class="nav-link">
+                      <div class="profile-name">
+                          <h6>Side Navigation</h6>
+                      </div>
+                  </div>
+              </li>
+      
+              {% if request.user.is_staff %}
+                  <!-- Admin Buttons -->
+                  <li class="nav-item">
+                      <a class="nav-link btn btn-primary text-white" href="{% url 'manage_tests' %}">
+                          <i class="fas fa-tasks"></i> Manage Tests
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link btn btn-secondary text-white" href="{% url 'view_results' %}">
+                          <i class="fas fa-chart-bar"></i> View Results
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link btn btn-success text-white" href="{% url 'manage_employees' %}">
+                          <i class="fas fa-users"></i> Manage Employees
+                      </a>
+                  </li>
+              {% else %}
+                  <!-- Employee Buttons -->
+                  <li class="nav-item">
+                      <a class="nav-link btn btn-primary text-white" href="{% url 'take_test' %}">
+                          <i class="fas fa-pencil-alt"></i> Take Test
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link btn btn-secondary text-white" href="{% url 'previous_result' %}">
+                          <i class="fas fa-history"></i> Previous Result
+                      </a>
+                  </li>
+              {% endif %}
+          </ul>
+      </nav>
+      

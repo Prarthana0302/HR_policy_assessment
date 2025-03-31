@@ -4,8 +4,8 @@ import json
 
 class Results(models.Model):
     R_id = models.AutoField(primary_key=True)
-    Result_past = models.FloatField(null=True, blank=True)
-    Result_present = models.FloatField()
+    Result = models.FloatField()
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"Result {self.R_id} - Present: {self.Result_present}%"
