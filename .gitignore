@@ -1,0 +1,17 @@
+# Python-related
+*.pyc
+__pycache__/
+venv/
+.env
+
+# Django-related
+db.sqlite3
+/media/
+staticfiles/
+
+# VS Code & JetBrains IDEs
+.vscode/
+.idea/
+
+# Other
+*.log
