@@ -134,6 +134,6 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'policy_assessment.CustomUser'
+# AUTH_USER_MODEL = 'policy_assessment.CustomUser'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'

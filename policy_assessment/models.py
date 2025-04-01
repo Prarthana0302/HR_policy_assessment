@@ -1,39 +1,23 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-import json
 
-class Results(models.Model):
-    R_id = models.AutoField(primary_key=True)
-    Result = models.FloatField()
-    created_at = models.DateField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Result {self.R_id} - Present: {self.Result_present}%"
-
-class Employee(models.Model):
-    E_id = models.AutoField(primary_key=True)
-    E_name = models.CharField(max_length=255) 
-    E_email = models.EmailField(unique=True)
-    R_id = models.ForeignKey(Results, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.E_name} ({self.E_email})"
-    
-class Admin(models.Model):
-    A_id = models.AutoField(primary_key=True)
-    A_name = models.CharField(max_length=255)
-    A_email = models.EmailField(unique=True)
-
-    def __str__(self):
-        return f"{self.A_name} ({self.A_email})"
-
-    
-class CustomUser(AbstractUser):
+class User(models.Model):
     ROLE_CHOICES = (
         ('admin', 'Admin'),
         ('employee', 'Employee'),
     )
+
+    email = models.EmailField(primary_key=True)  # Primary Key
+    name = models.CharField(max_length=255)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='employee')
 
     def __str__(self):
-        return f"{self.username} - {self.role}"
+        return f"{self.name} ({self.email}) - {self.role}"
+
+
+class Result(models.Model):
+    R_id = models.AutoField(primary_key=True)  # Auto-incremented primary key
+    email = models.ForeignKey(User, on_delete=models.CASCADE)  # Foreign Key to User
+    result_percentage = models.FloatField()  # Result%
+
+    def __str__(self):
+        return f"Result {self.R_id} - {self.email} - {self.result_percentage}%"
