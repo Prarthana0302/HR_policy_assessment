@@ -59,8 +59,6 @@ def logout_view(request):
     return redirect('login')
 
 # Employee Views
-def take_test(request):
-    return render(request, "policy_assessment/take_test.html")
 
 def previous_result(request):
     return render(request, "policy_assessment/previous_result.html")
@@ -132,3 +130,14 @@ def reset_password(request, uidb64, token):
     except (User.DoesNotExist, TypeError, ValueError, OverflowError):
         messages.error(request, "Invalid reset link.")
         return render(request, "policy_assessment/reset_password.html", {"valid": False})
+    
+def take_test(request):
+    # Show the instructions first
+    return render(request, "policy_assessment/instructions.html")
+
+
+def start_test(request):
+    # Show the welcome/start page
+    user_email = request.session.get('user_id')
+    user = User.objects.get(email=user_email)
+    return render(request, "policy_assessment/start_test.html", {'user_name': user.name})

@@ -1,0 +1,72 @@
+<!-- templates/policy_assessment/instructions.html -->
+{% extends 'policy_assessment/base.html' %}
+{% block content %}
+<style>
+    .instructions-container {
+        background-color: #e5f4eb;
+        padding: 30px;
+        border-radius: 10px;
+        margin: 40px auto;
+        max-width: 700px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .instructions-container h2 {
+        color: #1ba94c;
+        font-weight: bold;
+    }
+    .start-btn {
+        background-color: #1ba94c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    .start-btn.enabled {
+        cursor: pointer;
+        opacity: 1;
+    }
+</style>
+
+<div class="instructions-container">
+    <h2> Welcome to HR Policy Assessment Test</h2>
+    <p> We wish you all the best!</p>
+    <p><strong>Duration:</strong> 45 min</p>
+
+    <h3>Instructions</h3>
+    <ol>
+        <li>This is a timed test. Make sure you are not interrupted during the test, as the timer cannot be paused once started.</li>
+        <li>Please ensure you have a stable internet connection.</li>
+        <li>The Test Comprises of 10 questions</li>
+        <li>Each question is of 4 marks</li>
+        <li>Attempting all questions are necessary</li>
+        <li>1 mark will be deducted for a wrong answer</li>
+       
+    </ol>
+
+    <label>
+        <input type="checkbox" id="agree-checkbox">
+        I agree to all the instructions stated above.
+    </label><br><br>
+
+    <form action="{% url 'start_test' %}" method="get">
+        <button type="submit" id="start-btn" class="start-btn" disabled>Start Test</button>
+    </form>
+</div>
+
+<script>
+    const checkbox = document.getElementById("agree-checkbox");
+    const button = document.getElementById("start-btn");
+
+    checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+            button.disabled = false;
+            button.classList.add("enabled");
+        } else {
+            button.disabled = true;
+            button.classList.remove("enabled");
+        }
+    });
+</script>
+{% endblock %}
