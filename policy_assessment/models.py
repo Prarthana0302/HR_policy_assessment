@@ -7,6 +7,7 @@ class User(models.Model):
     )
 
     email = models.EmailField(primary_key=True)  # Primary Key
+    password = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='employee')
 

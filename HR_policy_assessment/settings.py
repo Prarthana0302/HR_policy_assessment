@@ -137,3 +137,13 @@ DATABASES = {
 # AUTH_USER_MODEL = 'policy_assessment.CustomUser'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"  # Use your email provider's SMTP server
+EMAIL_PORT = 587  # Use 465 for SSL, 587 for TLS
+EMAIL_USE_TLS = True  # Use TLS (or EMAIL_USE_SSL = True for SSL)
+EMAIL_HOST_USER = "jayeshdhopte66@gmail.com"  # Your email address
+EMAIL_HOST_PASSWORD = "jrqx xvzg bgin rdcy"  # Your email password or App Password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Default sender email
+
