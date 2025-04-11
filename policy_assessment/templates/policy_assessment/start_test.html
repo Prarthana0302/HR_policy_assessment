@@ -2,21 +2,122 @@
 {% extends 'policy_assessment/base.html' %}
 {% block content %}
 <style>
-    .welcome-container {
+    .test-container {
         background-color: #e0f7ef;
         padding: 40px;
         border-radius: 10px;
         max-width: 800px;
         margin: 40px auto;
     }
-    .welcome-container h1 {
+    .test-container h1 {
         color: #1ba94c;
+        margin-bottom: 20px;
+    }
+    .question-block {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .question-block p {
+        font-weight: bold;
+    }
+    .option {
+        margin: 10px 0;
+    }
+    .submit-btn {
+        background-color: #1ba94c;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    .submit-btn:hover {
+        background-color: #14893d;
+    }
+    #floating-timer {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ffffff;
+        border: 2px solid #1ba94c;
+        color: #1ba94c;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 16px;
+        z-index: 9999;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 </style>
 
-<div class="welcome-container">
-    <h1>Welcome to HR Policy Assessment Test</h1>
+<div class="test-container">
+    <h1>Welcome {{ user_name }}, Start Your Assessment</h1>
+    <div id="floating-timer">
+        <strong>Time Remaining: <span id="timer">300</span> seconds</strong>
+    </div>
+    <div style="text-align:center; background:#fff3cd; padding:10px; margin-bottom:20px; border:1px solid #ffeeba; color:#856404;">
+        🔒  The Side Navigation is disabled during the assessment for integrity.
+    </div>
     
-   
+    
+
+    <form method="POST" action="{% url 'submit_test' %}" id="testForm">
+        {% csrf_token %}
+        {% for question in questions %}
+        <div class="question-block">
+            <p>Q{{ forloop.counter }}. {{ question.question_text }}</p>
+            <div class="option">
+                <label><input type="radio" name="question_{{ question.id }}" value="A" required> A. {{ question.option_a }}</label><br>
+                <label><input type="radio" name="question_{{ question.id }}" value="B"> B. {{ question.option_b }}</label><br>
+                <label><input type="radio" name="question_{{ question.id }}" value="C"> C. {{ question.option_c }}</label><br>
+                <label><input type="radio" name="question_{{ question.id }}" value="D"> D. {{ question.option_d }}</label>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="submit-btn">Submit Test</button>
+    </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebarLinks = document.querySelectorAll("#sidebar a.nav-link");
+
+        // Disable links on test start
+        sidebarLinks.forEach(link => {
+            link.dataset.href = link.getAttribute("href");  // store original href
+            link.setAttribute("href", "javascript:void(0)");
+            link.style.pointerEvents = "none";
+            link.style.opacity = "0.5";
+            link.style.cursor = "not-allowed";
+        });
+
+        // Timer logic
+        let timeLeft = 300;
+        let timer = setInterval(function () {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                alert("Time's up! Submitting test...");
+                document.getElementById("testForm").submit();
+            } else {
+                document.getElementById("timer").innerText = timeLeft;
+            }
+            timeLeft -= 1;
+        }, 1000);
+
+        // Re-enable links on form submit
+        document.getElementById("testForm").addEventListener("submit", function () {
+            sidebarLinks.forEach(link => {
+                link.setAttribute("href", link.dataset.href);
+                link.style.pointerEvents = "auto";
+                link.style.opacity = "1";
+                link.style.cursor = "pointer";
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -1,5 +1,71 @@
 {% extends 'policy_assessment/base.html' %}
 {% block content %}
-    <h2>Manage Tests</h2>
-    <p>Admins can create, edit, or delete tests here.</p>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Manage Test Questions</h2>
+
+    <form method="POST" action="{% url 'add_question' %}" class="border p-4 rounded bg-light">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Question:</label>
+            <textarea name="question_text" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Option A:</label>
+            <input type="text" name="option_a" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Option B:</label>
+            <input type="text" name="option_b" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Option C:</label>
+            <input type="text" name="option_c" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Option D:</label>
+            <input type="text" name="option_d" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Correct Option (A/B/C/D):</label>
+            <input type="text" name="correct_option" class="form-control" maxlength="1" required>
+        </div>
+        <button type="submit" class="btn btn-success mt-3">Add Question</button>
+    </form>
+
+    <hr>
+
+    <h4 class="mt-4">Previously Added Questions</h4>
+    <table class="table table-bordered mt-3">
+        <thead class="thead-dark">
+            <tr>
+                <th>Question</th>
+                <th>Options</th>
+                <th>Correct</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for q in questions %}
+            <tr>
+                <td>{{ q.question_text }}</td>
+                <td>
+                    A: {{ q.option_a }}<br>
+                    B: {{ q.option_b }}<br>
+                    C: {{ q.option_c }}<br>
+                    D: {{ q.option_d }}
+                </td>
+                <td>{{ q.correct_option }}</td>
+                <td>
+                    <a href="{% url 'delete_question' q.id %}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure you want to delete this question?');">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center">No questions added yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
