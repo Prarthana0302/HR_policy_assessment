@@ -1,34 +1,28 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
-from . import views  # Correct Import
-from policy_assessment.views import forgot_password, reset_password, take_test ,start_test ,submit_test,manage_employees,add_question,delete_question
-
+from policy_assessment import views
 
 urlpatterns = [
-    path('', views.login_view, name='login'),  # Default login page
+    path('', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('send-invites/', views.send_invites, name='send_invites'),
-    path('signup/', views.employee_signup, name='employee_signup'),
-
-    # Role-Based Dashboards
-    path('admin_dashboard/', views.welcome_admin, name='welcome_admin'),
-    path('employee_dashboard/', views.welcome_employee, name='welcome_employee'),
-
-    # Employee Actions
-    path("take-test/", views.take_test, name="take_test"),
+    path('welcome_admin/', views.welcome_admin, name='welcome_admin'),
+    path('welcome_employee/', views.welcome_employee, name='welcome_employee'),
+    path('previous_result/', views.previous_result, name='previous_result'),
+    path('manage_tests/', views.manage_tests, name='manage_tests'),
+    path('delete_document/<str:filename>/', views.delete_document, name='delete_document'),
+    path('view_results/', views.view_results, name='view_results'),
+    path('delete-result/<int:result_id>/', views.delete_result, name='delete_result'),
+    path('manage_employees/', views.manage_employees, name='manage_employees'),
+    path('forgot_password/', views.forgot_password, name='forgot_password'),
+    path('reset-password/<str:uidb64>/<str:token>/', views.reset_password, name='reset_password'),
+    path('take_test/', views.take_test, name='take_test'),
     path('start_test/', views.start_test, name='start_test'),
     path('submit_test/', views.submit_test, name='submit_test'),
-    path("previous_result/", views.previous_result, name="previous_result"),
-
-    # Admin Actions
-    path("manage_tests/", views.manage_tests, name="manage_tests"),
-    path('add-question/', views.add_question, name='add_question'),
-    path('delete-question/<int:question_id>/', views.delete_question, name='delete_question'),
-    path("view_results/", views.view_results, name="view_results"),
-    path("manage_employees/", views.manage_employees, name="manage_employees"),
-     # ✅ Password Reset URLs (Add These)
-    path("forgot-password/", forgot_password, name="forgot_password"),
-    path("reset-password/<uidb64>/<token>/", reset_password, name="reset_password"),
-
-
+    path('acknowledge_policy/<str:policy_name>/', views.acknowledge_policy, name='acknowledge_policy'),
+    path('send_invites/', views.send_invites, name='send_invites'),
+    path('employee_signup/', views.employee_signup, name='employee_signup'),
+    path('admin_policy_documents/', views.admin_policy_documents, name='admin_policy_documents'),
+    path('employee_policy_documents/', views.employee_policy_documents, name='employee_policy_documents'),
+    path('view_policy/<str:filename>/', views.view_policy, name='view_policy'),
+    path('acknowledge_and_start_test/<str:filename>/', views.acknowledge_and_start_test, name='acknowledge_and_start_test'),
+    path('view_acknowledgements/', views.view_acknowledgements, name='view_acknowledgements'),  # New URL
 ]

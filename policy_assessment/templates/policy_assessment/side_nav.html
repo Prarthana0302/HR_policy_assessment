@@ -1,21 +1,4 @@
-<!-- {% load static %}
-<nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <ul class="nav">
-          <li class="nav-item nav-profile">
-            <div class="nav-link">
-              <div class="profile-name">
-                <p class="name">
-                  <h6>side nav bar</h6>
-                </p>
-                
-              </div>
-            </div>
-          </li>
-          
-        </ul>
-      </nav> -->
-
-      {% load static %}
+{% load static %}
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <li class="nav-item nav-profile">
@@ -43,18 +26,31 @@
                     <i class="fas fa-users"></i> Manage Employees
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link btn btn-warning text-white" href="{% url 'admin_policy_documents' %}">
+                    <i class="fas fa-file-alt"></i> Policy Documents
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn btn-info text-white" href="{% url 'view_acknowledgements' %}">
+                    <i class="fas fa-check-circle"></i> View Acknowledgements
+                </a>
+            </li>
+
         {% elif request.session.role == 'employee' %}
             <!-- Employee Buttons -->
             <li class="nav-item">
-                <a class="nav-link btn btn-primary text-white" href="{% url 'take_test' %}">
-                    <i class="fas fa-pencil-alt"></i> Take Test
+                <a class="nav-link btn btn-warning text-white mb-2" href="{% url 'employee_policy_documents' %}">
+                    <i class="fas fa-file-alt me-2"></i> View Policies
                 </a>
             </li>
+           
             <li class="nav-item">
                 <a class="nav-link btn btn-secondary text-white" href="{% url 'previous_result' %}">
-                    <i class="fas fa-history"></i> Previous Result
+                    <i class="fas fa-history"></i> Results
                 </a>
             </li>
+           
         {% endif %}
     </ul>
 </nav>

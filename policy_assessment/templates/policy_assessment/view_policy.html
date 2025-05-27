@@ -1,0 +1,80 @@
+{% extends 'policy_assessment/base.html' %}
+{% block content %}
+<style>
+    /* Add styles for error messages */
+    .error-message {
+        color: #dc3545;
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    /* Ensure the button remains consistent but can be disabled visually */
+    .btn-start-test:disabled {
+        background-color: #cccccc !important;
+        cursor: not-allowed;
+    }
+    /* Style for the Back to Policies button */
+    .btn-back {
+        background-color: #6c757d; /* Gray color for a neutral action */
+        color: white;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none; /* Remove underline for anchor tag */
+        display: inline-block; /* Ensure it behaves like a button */
+    }
+    .btn-back:hover {
+        background-color: #5a6268; /* Slightly darker gray on hover */
+    }
+</style>
+
+<h3>{{ filename }}</h3>
+
+<div style="height: 100vh;">
+    <!-- Embed PDF without any controls (no toolbar, no side preview) -->
+    <embed src="{{ full_file_url }}#toolbar=0" width="100%" height="100%" type="application/pdf" />
+</div>
+
+<!-- Button group at the end -->
+<div style="text-align: center; margin-top: 20px;">
+    
+
+    <!-- Start Test button, only for employees -->
+    {% if user_role == 'employee' %}
+        <form method="post" action="{% url 'acknowledge_and_start_test' filename %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" id="start-test-btn" class="btn-start-test"
+                style="background-color: #28a745; color: white; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;"
+                onmouseover="this.style.backgroundColor='#218838'"
+                onmouseout="this.style.backgroundColor='#28a745'">
+                Start Test
+            </button>
+        </form>
+    {% endif %}
+</div>
+
+<!-- Display error messages if any -->
+{% if messages %}
+<div class="error-message">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const hasTakenTest = {{ has_taken_test|yesno:"true,false" }};
+        const startTestBtn = document.getElementById("start-test-btn");
+
+        if (hasTakenTest) {
+            startTestBtn.addEventListener("click", function (event) {
+                event.preventDefault(); // Prevent form submission
+                alert("You have already appeared for this policy test.");
+            });
+        }
+    });
+</script>
+{% endblock %}

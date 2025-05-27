@@ -1,4 +1,3 @@
-<!-- templates/policy_assessment/instructions.html -->
 {% extends 'policy_assessment/base.html' %}
 {% block content %}
 <style>
@@ -9,10 +8,34 @@
         margin: 40px auto;
         max-width: 700px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center; /* Center-align text for better presentation */
     }
     .instructions-container h2 {
         color: #1ba94c;
         font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .instructions-container h3 {
+        color: #333;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+    .instructions-container p {
+        margin: 5px 0;
+        font-size: 1.05rem; /* Larger than default, smaller than instructions */
+    }
+    .instructions-container ol {
+        text-align: left; /* Align instructions list to the left */
+        padding-left: 20px;
+        margin-bottom: 20px;
+    }
+    .instructions-container ol li {
+        margin-bottom: 10px;
+        line-height: 1.8; /* Increased for better readability */
+        font-size: 1.0rem; /* Mid-range font size for instructions */
+        background-color: #d4eadb; /* Light background for highlighting */
+        padding: 8px 12px; /* Padding for better appearance */
+        border-radius: 5px; /* Rounded corners for a modern look */
     }
     .start-btn {
         background-color: #1ba94c;
@@ -22,50 +45,69 @@
         border-radius: 5px;
         cursor: not-allowed;
         opacity: 0.5;
+        font-size: 1rem;
     }
     .start-btn.enabled {
         cursor: pointer;
         opacity: 1;
     }
+    .checkbox-label {
+        display: block;
+        margin: 20px 0;
+        font-size: 1rem;
+        color: #333;
+    }
 </style>
 
 <div class="instructions-container">
-    <h2> Welcome to HR Policy Assessment Test</h2>
-    <p> We wish you all the best!</p>
-    <p><strong>Duration:</strong> 5 min</p>
+    <h2>Welcome to HR Policy Assessment Test</h2>
+    <p>We wish you all the best!</p>
+    <p><strong>Duration:</strong> 15 min</p>
 
     <h3>Instructions</h3>
     <ol>
         <li>This is a timed test. Make sure you are not interrupted during the test, as the timer cannot be paused once started.</li>
         <li>Please ensure you have a stable internet connection.</li>
-        <li>The Test Comprises of 10 questions</li>
+        <li>There are 4 attempts to Qualify each Policy Test.</li>
+        <li>Once attempted the test please do not forget to click on acknowledge button in the previous results page as it will appear only once.</li>
+        <li>The Test Comprises of 5 questions</li>
         <li>Each question is of 4 marks</li>
         <li>Attempting all questions are necessary</li>
         <li>1 mark will be deducted for a wrong answer</li>
-       
     </ol>
 
-    <label>
+    <label class="checkbox-label">
         <input type="checkbox" id="agree-checkbox">
         I agree to all the instructions stated above.
-    </label><br><br>
+    </label>
 
-    <form action="{% url 'start_test' %}" method="get">
+    <form id="start-test-form" method="get" action="{% url 'start_test' %}">
+        <input type="hidden" name="pdf" value="{{ pdf_filename }}">
         <button type="submit" id="start-btn" class="start-btn" disabled>Start Test</button>
     </form>
 </div>
 
 <script>
     const checkbox = document.getElementById("agree-checkbox");
-    const button = document.getElementById("start-btn");
+    const startButton = document.getElementById("start-btn");
+    const form = document.getElementById("start-test-form");
 
+    // Enable/disable the button based on checkbox state
     checkbox.addEventListener("change", () => {
         if (checkbox.checked) {
-            button.disabled = false;
-            button.classList.add("enabled");
+            startButton.disabled = false;
+            startButton.classList.add("enabled");
         } else {
-            button.disabled = true;
-            button.classList.remove("enabled");
+            startButton.disabled = true;
+            startButton.classList.remove("enabled");
+        }
+    });
+
+    // Prevent form submission if checkbox is unchecked
+    form.addEventListener("submit", (event) => {
+        if (!checkbox.checked) {
+            event.preventDefault(); // Prevent form submission
+            alert("Please agree to the instructions before starting the test.");
         }
     });
 </script>

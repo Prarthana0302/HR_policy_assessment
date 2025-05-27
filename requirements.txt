@@ -1,0 +1,14 @@
+Django == 5.2.1
+mysqlclient == 2.2.7
+cffi == 1.17.1
+charset-normalizer == 3.4.2
+cryptography == 45.0.3
+pdfminer.six == 20250327
+pdfplumber == 0.11.6
+Pillow == 11.2.1
+pycparser == 2.22
+pypdfium2 == 4.30.1
+chardet == 5.2.0
+reportlab == 4.4.1
+et-xmlfile == 2.0.0
+openpyxl == 3.1.5

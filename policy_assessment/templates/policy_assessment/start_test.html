@@ -1,4 +1,3 @@
-<!-- templates/policy_assessment/start_test.html -->
 {% extends 'policy_assessment/base.html' %}
 {% block content %}
 <style>
@@ -13,6 +12,37 @@
         color: #1ba94c;
         margin-bottom: 20px;
     }
+    .attempt-message {
+        position: fixed;
+        top: 70px; /* Position below the timer (timer height ~40px + padding) */
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.1rem;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: 1px solid;
+        z-index: 9999;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        min-width: 300px; /* Ensure it doesn't collapse too narrow */
+    }
+    /* Dynamic styling based on attempts remaining */
+    .attempt-message.many-attempts {
+        background-color: #d4edda; /* Light green */
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    .attempt-message.few-attempts {
+        background-color: #fff3cd; /* Light yellow */
+        border-color: #ffeeba;
+        color: #856404;
+    }
+    .attempt-message.last-attempt {
+        background-color: #f8d7da; /* Light red */
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
     .question-block {
         margin-bottom: 30px;
         padding: 20px;
@@ -22,9 +52,11 @@
     }
     .question-block p {
         font-weight: bold;
+        white-space: normal; /* Ensure question text wraps naturally */
     }
     .option {
         margin: 10px 0;
+        white-space: normal; /* Ensure option text wraps naturally */
     }
     .submit-btn {
         background-color: #1ba94c;
@@ -53,32 +85,53 @@
         z-index: 9999;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
+    #debug-output {
+        background-color: #f8f9fa;
+        padding: 10px;
+        margin-bottom: 20px;
+        white-space: pre-wrap;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+    }
 </style>
 
 <div class="test-container">
     <h1>Welcome {{ user_name }}, Start Your Assessment</h1>
+    <!-- Display the attempt number with remaining attempts (now floating) -->
+    <p class="attempt-message {% if remaining_attempts >= 3 %}many-attempts{% elif remaining_attempts >= 1 %}few-attempts{% else %}last-attempt{% endif %}">
+        This is your 
+        {% if current_attempt == 1 %}1st{% elif current_attempt == 2 %}2nd{% elif current_attempt == 3 %}3rd{% else %}4th{% endif %} 
+        attempt for {{ pdf_filename }}. 
+        You have {{ remaining_attempts }} attempt{{ remaining_attempts|pluralize }} remaining out of 4.
+    </p>
     <div id="floating-timer">
-        <strong>Time Remaining: <span id="timer">300</span> seconds</strong>
+        <strong>Time Remaining: <span id="timer">15:00</span></strong>
     </div>
     <div style="text-align:center; background:#fff3cd; padding:10px; margin-bottom:20px; border:1px solid #ffeeba; color:#856404;">
-        🔒  The Side Navigation is disabled during the assessment for integrity.
+        🔒 The Side Navigation is disabled during the assessment for integrity.
     </div>
-    
-    
-
-    <form method="POST" action="{% url 'submit_test' %}" id="testForm">
+    <form method="post" action="{% url 'submit_test' %}">
         {% csrf_token %}
-        {% for question in questions %}
-        <div class="question-block">
-            <p>Q{{ forloop.counter }}. {{ question.question_text }}</p>
-            <div class="option">
-                <label><input type="radio" name="question_{{ question.id }}" value="A" required> A. {{ question.option_a }}</label><br>
-                <label><input type="radio" name="question_{{ question.id }}" value="B"> B. {{ question.option_b }}</label><br>
-                <label><input type="radio" name="question_{{ question.id }}" value="C"> C. {{ question.option_c }}</label><br>
-                <label><input type="radio" name="question_{{ question.id }}" value="D"> D. {{ question.option_d }}</label>
-            </div>
+        <input type="hidden" name="pdf_filename" value="{{ pdf_filename }}">
+
+        <!-- Debug output using json_script -->
+        <div style="display: none;">
+            <script id="questions-data" type="application/json">
+                {{ questions|json_script:"questions-data" }}
+            </script>
         </div>
+        <div id="debug-output"></div>
+
+        {% for q in questions %}
+            <div class="question-block">
+                <p><strong>Q{{ forloop.counter }}. {{ q.question_text }}</strong></p>
+                <div class="option"><label><input type="radio" name="question_{{ forloop.counter0 }}" value="A"> {{ q.option_a }}</label></div>
+                <div class="option"><label><input type="radio" name="question_{{ forloop.counter0 }}" value="B"> {{ q.option_b }}</label></div>
+                <div class="option"><label><input type="radio" name="question_{{ forloop.counter0 }}" value="C"> {{ q.option_c }}</label></div>
+                <div class="option"><label><input type="radio" name="question_{{ forloop.counter0 }}" value="D"> {{ q.option_d }}</label></div>
+            </div>
         {% endfor %}
+
         <button type="submit" class="submit-btn">Submit Test</button>
     </form>
 </div>
@@ -87,30 +140,33 @@
     document.addEventListener("DOMContentLoaded", function () {
         const sidebarLinks = document.querySelectorAll("#sidebar a.nav-link");
 
-        // Disable links on test start
+        // Disable sidebar links
         sidebarLinks.forEach(link => {
-            link.dataset.href = link.getAttribute("href");  // store original href
+            link.dataset.href = link.getAttribute("href");
             link.setAttribute("href", "javascript:void(0)");
             link.style.pointerEvents = "none";
             link.style.opacity = "0.5";
             link.style.cursor = "not-allowed";
         });
 
-        // Timer logic
-        let timeLeft = 300;
+        // Timer logic (15 minutes = 900 seconds)
+        let timeLeft = 900;
         let timer = setInterval(function () {
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 alert("Time's up! Submitting test...");
-                document.getElementById("testForm").submit();
+                document.querySelector("form").submit();
             } else {
-                document.getElementById("timer").innerText = timeLeft;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById("timer").innerText =
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }
             timeLeft -= 1;
         }, 1000);
 
-        // Re-enable links on form submit
-        document.getElementById("testForm").addEventListener("submit", function () {
+        // Re-enable sidebar links after form submit
+        document.querySelector("form").addEventListener("submit", function () {
             sidebarLinks.forEach(link => {
                 link.setAttribute("href", link.dataset.href);
                 link.style.pointerEvents = "auto";
@@ -118,6 +174,10 @@
                 link.style.cursor = "pointer";
             });
         });
+
+        // Display JSON debug data
+        const questionsData = JSON.parse(document.getElementById("questions-data").textContent);
+        document.getElementById("debug-output").textContent = JSON.stringify(questionsData, null, 2);
     });
 </script>
 {% endblock %}

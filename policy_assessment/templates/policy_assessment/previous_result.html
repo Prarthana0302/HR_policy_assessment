@@ -1,5 +1,152 @@
 {% extends 'policy_assessment/base.html' %}
+
 {% block content %}
-    <h2>Prevoius Results</h2>
-    <p>You have not appeared for any test in the past, so you do not have any previous result.</p>
+<style>
+    .result-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .result-container h2 {
+        color: #1ba94c;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .result-block {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+    }
+    .result-block p {
+        margin: 5px 0;
+    }
+    .status-pass {
+        color: #28a745;
+        font-weight: bold;
+    }
+    .status-fail {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    .acknowledge-btn {
+        background-color: #1ba94c;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+    .acknowledge-btn:hover {
+        background-color: #179b3f;
+    }
+    .incorrect-answers {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #fff3f3;
+        border-left: 4px solid #dc3545;
+        border-radius: 4px;
+    }
+    .incorrect-answers h4 {
+        color: #dc3545;
+        margin-bottom: 10px;
+    }
+    .incorrect-answers p {
+        margin: 5px 0;
+    }
+    .incorrect-answers .correct-answer {
+        color: #28a745;
+        font-weight: bold;
+    }
+    .incorrect-answers .selected-answer {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    .warning-message {
+        color: #dc3545;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: #fff3f3;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="result-container">
+    <h2>Your Test Results</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not has_results %}
+        <p style="text-align: center;">No results available. Please take a test to see your results.</p>
+    {% else %}
+        <!-- Display the latest result (if any) -->
+        {% if latest_result %}
+            <div class="result-block">
+                {% if latest_result.show_acknowledge %}
+                    <div class="warning-message">
+                        {{ latest_result.warning_message }}
+                    </div>
+                {% endif %}
+                <h3>Latest Result</h3>
+                <p><strong>Policy:</strong> {{ latest_result.pdf_filename }}</p>
+                <p><strong>Correct Answers:</strong> {{ latest_result.correct_answers }} out of {{ latest_result.total_questions }}</p>
+                <p><strong>Percentage:</strong> {{ latest_result.percentage|floatformat:2 }}%</p>
+                <p><strong>Status:</strong> <span class="status-{{ latest_result.status|lower }}">{{ latest_result.status }}</span></p>
+                <p><strong>Attempt:</strong> {{ latest_result.total_attempts }} of {{ latest_result.display_total_attempts }}</p>
+                {% if latest_result.show_acknowledge %}
+                    <form method="post" action="{% url 'acknowledge_policy' latest_result.pdf_filename %}">
+                        {% csrf_token %}
+                        <button type="submit" class="acknowledge-btn">Acknowledge</button>
+                    </form>
+                {% endif %}
+                {% if latest_result.total_attempts >= max_attempts and not latest_result.has_passed and latest_result.incorrect_answers %}
+                    <div class="incorrect-answers">
+                        <h4>Incorrect Answers</h4>
+                        {% for answer in latest_result.incorrect_answers %}
+                            <div style="margin-bottom: 15px;">
+                                <p><strong>Question:</strong> {{ answer.question_text }}</p>
+                                <p>{{ answer.option_a }}</p>
+                                <p>{{ answer.option_b }}</p>
+                                <p>{{ answer.option_c }}</p>
+                                <p>{{ answer.option_d }}</p>
+                                <p><strong>Your Answer:</strong> <span class="selected-answer">{{ answer.selected_option }}</span></p>
+                                <p><strong>Correct Answer:</strong> <span class="correct-answer">{{ answer.correct_answer }}</span></p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Display past results -->
+        {% if past_results %}
+            <h3>Past Results</h3>
+            {% for result in past_results %}
+                <div class="result-block">
+                    <p><strong>Policy:</strong> {{ result.pdf_filename }}</p>
+                    <p><strong>Percentage:</strong> {{ result.result_percentage|floatformat:2 }}%</p>
+                    <p><strong>Status:</strong> <span class="status-{{ result.status|lower }}">{{ result.status }}</span></p>
+                    <p><strong>Attempt:</strong> {{ result.attempt_number|default:"Unknown" }} of {{ result.display_total_attempts }}</p>
+                    {% if result.show_acknowledge %}
+                        <form method="post" action="{% url 'acknowledge_policy' result.pdf_filename %}">
+                            {% csrf_token %}
+                            <button type="submit" class="acknowledge-btn">Acknowledge</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+</div>
 {% endblock %}

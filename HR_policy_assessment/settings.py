@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'policy_assessment.middleware.AllowFrameOptions',
 ]
 
 ROOT_URLCONF = 'HR_policy_assessment.urls'
@@ -147,3 +148,7 @@ EMAIL_HOST_USER = "jayeshdhopte66@gmail.com"  # Your email address
 EMAIL_HOST_PASSWORD = "jrqx xvzg bgin rdcy"  # Your email password or App Password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Default sender email
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+X_FRAME_OPTIONS = 'ALLOWALL'

@@ -1,0 +1,131 @@
+{% extends 'policy_assessment/base.html' %}
+
+{% block content %}
+<style>
+    /* Dark theme styling */
+    .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #212529;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        color: #e9ecef;
+    }
+    .container h2 {
+        color: #1ba94c;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    /* Button styling */
+    .btn-success {
+        background-color: #1ba94c;
+        border: none;
+    }
+    .btn-success:hover {
+        background-color: #179b3f;
+    }
+    /* Position the Download Excel Report button */
+    .download-btn-container {
+        margin-bottom: 20px;
+        text-align: right; /* Changed from left to right */
+    }
+    /* Table styling */
+    .container .table {
+        background-color: #212529 !important;
+        color: #e9ecef !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+    }
+    .container .table thead {
+        background-color: #343a40 !important;
+        color: #e9ecef !important;
+    }
+    .container .table th,
+    .container .table td {
+        background-color: transparent !important;
+        border: none !important;
+        border-bottom: 1px solid #495057 !important;
+        border-right: 1px solid #495057 !important;
+        padding: 15px !important;
+        text-align: center !important;
+        font-size: 1rem !important;
+        color: #e9ecef !important;
+    }
+    .container .table th:last-child,
+    .container .table td:last-child {
+        border-right: none !important;
+    }
+    .container .table tbody tr {
+        background-color: #343a40 !important;
+        transition: background-color 0.2s ease !important;
+    }
+    .container .table tbody tr:nth-child(even) {
+        background-color: #2c3136 !important;
+    }
+    .container .table tbody tr:hover {
+        background-color: #3e444a !important;
+    }
+    /* Alert styling */
+    .alert {
+        background-color: #343a40;
+        color: #e9ecef;
+        border: none;
+        border-left: 4px solid;
+        margin-bottom: 20px;
+    }
+    .alert-success {
+        border-left-color: #1ba94c;
+    }
+    .alert-danger {
+        border-left-color: #dc3545;
+    }
+    .container .text-center {
+        color: #e9ecef !important;
+    }
+</style>
+
+<div class="container">
+    <h2>Acknowledged Policies</h2>
+
+    <!-- Download Excel Report button at the top right -->
+    <div class="download-btn-container">
+        <a href="{% url 'view_acknowledgements' %}?download_excel=true" class="btn btn-success">Download Excel Report</a>
+    </div>
+
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if acknowledgements %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Email</th>
+                    <th>Policy Name</th>
+                    <th>Number of Attempts</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ack in acknowledgements %}
+                    <tr>
+                        <td>{{ ack.employee_name }}</td>
+                        <td>{{ ack.employee_email }}</td>
+                        <td>{{ ack.policy_name }}</td>
+                        <td>{{ ack.attempt_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center">No acknowledged policies found.</p>
+    {% endif %}
+</div>
+{% endblock %}

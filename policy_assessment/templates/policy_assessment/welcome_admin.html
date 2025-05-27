@@ -1,11 +1,194 @@
-{% extends "policy_assessment/base.html" %}
-{% load static %}
+{% extends 'policy_assessment/base.html' %}
 
 {% block content %}
-    <div class="page-header">
-        <h2>Welcome Admin</h2>
+<style>
+    /* Dark theme for the admin dashboard */
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #212529; /* Dark gray background */
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        color: #e9ecef; /* Light gray text for contrast */
+    }
+    .dashboard-container h1 {
+        color: #1ba94c; /* Keep the green color for the heading */
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .stats-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-bottom: 40px;
+    }
+    .stat-card {
+        background-color: #343a40; /* Slightly lighter dark gray for cards */
+        border-radius: 8px;
+        padding: 20px;
+        margin: 10px;
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    .stat-card h3 {
+        color: #adb5bd; /* Light gray for subheadings */
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    .stat-card p {
+        font-size: 1.5rem;
+        color: #ffffff; /* White for the stat numbers */
+        margin: 0;
+    }
+    .chart-section {
+        margin-bottom: 40px;
+    }
+    .chart-section h2 {
+        color: #adb5bd; /* Light gray for chart titles */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .chart-container {
+        background-color: #343a40; /* Match card background */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    canvas {
+        max-width: 100%;
+        height: 350px !important; /* Fixed height as per previous version */
+    }
+</style>
+
+<div class="dashboard-container">
+    <h1>Admin Dashboard</h1>
+
+    <!-- Statistics Section -->
+    <div class="stats-section">
+        <div class="stat-card">
+            <h3>Policies Uploaded</h3>
+            <p>{{ num_policies_uploaded }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Employees Interacted</h3>
+            <p>{{ employees_interacted }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Employees Pending</h3>
+            <p>{{ employees_pending }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Employees Acknowledged</h3>
+            <p>{{ employees_acknowledged }}</p>
+        </div>
     </div>
-    <div class="content">
-        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+
+    <!-- Bar Chart: Average Attempts Per Policy (Horizontal) -->
+    <div class="chart-section">
+        <h2>Average Attempts Per Policy</h2>
+        <div class="chart-container">
+            <canvas id="barChart"></canvas>
+        </div>
     </div>
-{% endblock content %}
+
+    <!-- Pie Chart: Policies Failed vs Passed and Acknowledged -->
+    <div class="chart-section">
+        <h2>Policy Acknowledgment Status</h2>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    // Bar Chart: Average Attempts Per Policy (Horizontal)
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ bar_labels|safe }},
+            datasets: [{
+                label: 'Average Attempts',
+                data: {{ bar_data|safe }},
+                backgroundColor: '#1ba94c', // Green bars
+                borderColor: '#179b3f',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Makes the bar chart horizontal
+            maintainAspectRatio: false, // Allow custom height
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Average Attempts',
+                        color: '#e9ecef' // Light gray for axis labels
+                    },
+                    ticks: {
+                        color: '#e9ecef' // Light gray for tick labels
+                    },
+                    grid: {
+                        color: '#495057' // Slightly lighter grid lines
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Policy',
+                        color: '#e9ecef'
+                    },
+                    ticks: {
+                        color: '#e9ecef'
+                    },
+                    grid: {
+                        color: '#495057'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#e9ecef' // Light gray for legend
+                    }
+                }
+            }
+        }
+    });
+
+    // Pie Chart: Policies Failed vs Passed and Acknowledged
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ pie_labels|safe }},
+            datasets: [{
+                data: {{ pie_data|safe }},
+                backgroundColor: [
+                    '#dc3545', // Red for Failed
+                    '#1ba94c'  // Green for Passed
+                ],
+                borderColor: '#343a40',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false, // Allow custom height
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#e9ecef' // Light gray for legend
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

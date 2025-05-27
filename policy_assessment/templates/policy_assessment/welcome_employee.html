@@ -2,10 +2,73 @@
 {% load static %}
 
 {% block content %}
-    <div class="page-header">
-        <h2>Welcome Employee</h2>
-    </div>
-    <div class="content">
-        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
-    </div>
+<!-- Inline CSS for styling the Welcome Employee page -->
+<style>
+    /* Container for the welcome content, centered on the page */
+    .welcome-container {
+        max-width: 1000px; /* Limit the width for readability */
+        margin: 40px auto; /* Center the container horizontally */
+        padding: 30px; /* Add padding for internal spacing */
+        background-color: #f8f9fa; /* Light background color for contrast */
+        border-radius: 10px; /* Rounded corners for a modern look */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        text-align: center; /* Center-align text inside the container */
+    }
+
+    /* Style for the heading */
+    .welcome-container h2 {
+        color: #1ba94c; /* Green color to match the app's theme */
+        margin-bottom: 30px; /* Space below the heading */
+        font-size: 2rem; /* Larger font size for prominence */
+    }
+
+    /* Style for the instructions list */
+    .instructions-list {
+        list-style-type: none; /* Remove default list bullets */
+        padding: 0; /* Remove default padding */
+        font-size: 1.1rem; /* Slightly larger font for readability */
+        color: #333; /* Dark text color for contrast */
+        text-align: left; /* Align list items to the left within the centered container */
+        display: inline-block; /* Allow the list to size itself based on content */
+    }
+
+    /* Style for each list item */
+    .instructions-list li {
+        position: relative; /* For positioning the custom bullet */
+        padding-left: 30px; /* Space for the custom bullet */
+        margin-bottom: 20px; /* Space between list items */
+        line-height: 1.6; /* Increase line height for readability */
+    }
+
+    /* Custom bullet for list items */
+    .instructions-list li::before {
+        content: "•"; /* Custom bullet symbol */
+        position: absolute; /* Position the bullet */
+        left: 0; /* Align bullet to the left */
+        color: #1ba94c; /* Match the green theme */
+        font-size: 1.5rem; /* Larger bullet for visibility */
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+        .welcome-container {
+            margin: 20px; /* Reduce margin on smaller screens */
+            padding: 20px; /* Reduce padding on smaller screens */
+        }
+    }
+</style>
+
+<!-- Main content container -->
+<div class="welcome-container">
+    <h2>Welcome Employee</h2>
+    <!-- List of instructions -->
+    <ul class="instructions-list">
+        <li>Please go to "View Policies" in the Side Navigation to explore company policies.</li>
+        <li>There are several company policies available. Click on "View" for any policy to read the entire Policy Document.</li>
+        <li>After reading the whole Policy Document, click on "Start Test" at the bottom of the same page.</li>
+        <li>Answer the questions based on the policy you have read.</li>
+        <li>You can view your results in the "Results" section in the Side Navigation.</li>
+        <li>Once attempted the Test do not forget to acknowledge the Policy .</li>
+    </ul>
+</div>
 {% endblock content %}
